@@ -1,0 +1,139 @@
+<script setup>
+import { RouterLink } from 'vue-router'
+
+import BtnPublishOffer from './BtnPublishOffer.vue'
+</script>
+
+<template>
+  <header>
+    <div class="container">
+      <div class="topBloc">
+        <RouterLink :to="{ name: 'home' }">
+          <img src="../assets/img/logo.svg" alt="" />
+        </RouterLink>
+
+        <div class="middlePart">
+          <BtnPublishOffer />
+
+          <div>
+            <input type="text" name="search" id="search" placeholder="Rechercher sur leboncoin" />
+            <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
+          </div>
+        </div>
+
+        <div>
+          <font-awesome-icon :icon="['far', 'user']" />
+          <p>Se connecter</p>
+        </div>
+      </div>
+
+      <div class="bottomBloc">
+        <span>Immobilier</span>
+
+        <font-awesome-icon :icon="['fas', 'circle']" />
+
+        <span>Véhicules</span>
+
+        <font-awesome-icon :icon="['fas', 'circle']" />
+
+        <span>Locations de vacances</span>
+
+        <font-awesome-icon :icon="['fas', 'circle']" />
+
+        <span>Emploi</span>
+
+        <font-awesome-icon :icon="['fas', 'circle']" />
+
+        <span>Mode</span>
+
+        <font-awesome-icon :icon="['fas', 'circle']" />
+
+        <span>Maison & Jardin</span>
+
+        <font-awesome-icon :icon="['fas', 'circle']" />
+
+        <span>Famille</span>
+
+        <font-awesome-icon :icon="['fas', 'circle']" />
+
+        <span>Electronique</span>
+
+        <font-awesome-icon :icon="['fas', 'circle']" />
+
+        <span>Loisirs</span>
+
+        <font-awesome-icon :icon="['fas', 'circle']" />
+
+        <span>Autres</span>
+      </div>
+    </div>
+  </header>
+</template>
+
+<style scoped>
+header {
+  border-bottom: 1px solid var(--grey);
+  height: var(--header-height);
+}
+.container {
+  padding: 10px 0 20px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+img {
+  width: 140px;
+}
+/* -- TOP BLOC ---------------- */
+.topBloc {
+  display: flex;
+  justify-content: space-between;
+}
+.topBloc > div:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.topBloc p {
+  font-size: 12px;
+}
+.middlePart {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.middlePart > div {
+  display: flex;
+  background-color: var(--grey-light);
+  padding: 7px;
+  border-radius: 10px;
+  width: 300px;
+}
+.middlePart input {
+  background-color: inherit;
+  border: none;
+  flex: 1;
+}
+.middlePart svg {
+  background-color: var(--orange);
+  padding: 8px;
+  box-sizing: content-box;
+  border-radius: 7px;
+}
+.middlePart input::placeholder {
+  color: var(--black);
+  font-size: 16px;
+}
+/* -- BOTTOM BLOC ---------------- */
+.bottomBloc {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+.bottomBloc svg {
+  color: var(--black);
+  font-size: 2px;
+}
+</style>
