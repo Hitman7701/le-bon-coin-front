@@ -20,10 +20,12 @@ import {
   faSearch,
   faAngleLeft,
   faAngleRight,
+  faArrowRight,
 } from '@fortawesome/free-solid-svg-icons'
 
 // Ajout de l'icône à la bibliothèque
 library.add(
+  faArrowRight,
   faPlusSquare,
   faHeart,
   faCheckDouble,

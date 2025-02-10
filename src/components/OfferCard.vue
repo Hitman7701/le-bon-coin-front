@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { computed } from 'vue'
+import { formatPrice } from '../utils/formatPrice'
 
 const props = defineProps({
   offerInfos: {
@@ -14,7 +15,30 @@ const props = defineProps({
 })
 
 const formatDate = computed(() => {
+  // -- Syntaxe qui chaîne toutes les méthodes
   return props.offerInfos.updatedAt.split('T')[0].split('-').reverse().join('/')
+
+  // -- Version non chaînée pour comprendre le déroulé
+  // const creationDateUTCFormat = props.offerInfos.updatedAt
+  // console.log('OfferCard - 1 - creationDateUTCFormat>>>', creationDateUTCFormat)
+  // const dateSimpleFormat = creationDateUTCFormat.split('T')[0]
+  // console.log('OfferCard - 2 - dateSimpleFormat>>>', dateSimpleFormat)
+  // const dateSimpleFormatArray = dateSimpleFormat.split('-')
+  // console.log('OfferCard - 3 - dateSimpleFormatArray>>>', dateSimpleFormatArray)
+  // const dateCorrectOrderArray = dateSimpleFormatArray.reverse()
+  // console.log('OfferCard - 4 - dateCorrectOrderArray>>>', dateCorrectOrderArray)
+  // const stringDate = dateCorrectOrderArray.join('/')
+  // console.log('OfferCard - 5 - stringDate>>>', stringDate)
+  // return stringDate
+})
+
+const formatedPrice = computed(() => {
+  const price = props.offerInfos.price
+
+  /*
+   On retourne la valeur de retour de la fonction nommée 'formatPrice' qui est déclarée dans le dossier 'utils'. Ainsi nous pouvons la réutiliser dans d'autres composants tels que 'OfferView.vue'. Ceci est plus pratique, contrairement à la propriété calculée 'formatDate' que nous avons réécrite dans le composant 'OfferView.vue'.
+   */
+  return formatPrice(price)
 })
 </script>
 
@@ -35,7 +59,7 @@ const formatDate = computed(() => {
 
       <p>{{ offerInfos.title }}</p>
 
-      <p>{{ offerInfos.price }} €</p>
+      <p>{{ formatedPrice }} €</p>
     </div>
 
     <div class="secondPart">

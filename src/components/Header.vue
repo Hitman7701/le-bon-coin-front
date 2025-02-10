@@ -73,6 +73,12 @@ import BtnPublishOffer from './BtnPublishOffer.vue'
 <style scoped>
 header {
   border-bottom: 1px solid var(--grey);
+  /* -- Bonus 1 - Pour que le 'header' reste en haut de la page */
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background-color: #fff;
+  z-index: 5;
   height: var(--header-height);
 }
 .container {
