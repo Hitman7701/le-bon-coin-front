@@ -20,7 +20,6 @@ onMounted(async () => {
 
     offersList.value = data
   } catch (error) {
-    // Affiche l'erreur dans la console du navigateur
     console.log('HomeView - catch >>>', error)
   }
 })
