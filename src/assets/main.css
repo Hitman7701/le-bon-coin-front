@@ -20,6 +20,8 @@ body {
 
 main {
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
+  /* -- Bonus 1 - Pour que le 'main' soit toujours sous le 'header' qui est maintenant en position 'fixed' en haut de l'écran */
+  margin-top: var(--header-height);
 }
 
 .container {

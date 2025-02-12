@@ -11,7 +11,14 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // Import icône
-import { faPlusSquare, faHeart, faClock, faUser } from '@fortawesome/free-regular-svg-icons'
+import {
+  faPlusSquare,
+  faHeart,
+  faClock,
+  faUser,
+  faEyeSlash,
+  faEye,
+} from '@fortawesome/free-regular-svg-icons'
 
 import {
   faCheckDouble,
@@ -38,6 +45,8 @@ library.add(
   faSearch,
   faAngleLeft,
   faAngleRight,
+  faEyeSlash,
+  faEye,
 )
 
 const userToken = ref('')
