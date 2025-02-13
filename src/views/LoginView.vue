@@ -1,25 +1,23 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
-import axios from 'axios'
 import { ref, inject } from 'vue'
+import axios from 'axios'
+
+const router = useRouter()
+
+const GlobalStore = inject('GlobalStore')
 
 const email = ref('')
 const password = ref('')
-
-const errorMessage = ref('')
-const isConnecting = ref(false)
 const displayPassword = ref(false)
-const router = useRouter()
-const GlobalStore = inject('GlobalStore')
+const isSubmitting = ref(false)
+const errorMessage = ref('')
 
 const handleSubmit = async () => {
-  console.log('submit', {
-    email: email.value,
-    password: password.value,
-  })
-  if (email.value && password.value) {
-    isConnecting.value = true
-    try {
+  try {
+    isSubmitting.value = true
+
+    if (email.value && password.value) {
       const { data } = await axios.post(
         'https://site--strapileboncoin--2m8zk47gvydr.code.run/api/auth/local',
         {
@@ -28,17 +26,32 @@ const handleSubmit = async () => {
         },
       )
 
-      console.log(data)
-      GlobalStore.changeToken(data.jwt)
+      // console.log('LoginView - data>>', data)
+
+      // Création de l'objet qui sera stocké dans le fournisseur de dépendance et les cookies
+      const userInfos = {
+        username: data.user.username,
+        token: data.jwt,
+      }
+
+      GlobalStore.changeUserInfos(userInfos)
+
+      $cookies.set('userInfos', userInfos)
+
       router.push({ name: 'home' })
-    } catch (error) {
-      console.log(error.response.data.error)
+    } else {
+      errorMessage.value = 'Veuillez remplir tous les champs'
+    }
+  } catch (error) {
+    console.log('LoginView - catch>>', error)
+    if (error.response) {
+      errorMessage.value = error.response.data.error.message
+    } else {
       errorMessage.value = 'Un problème est survenu, veuillez essayer à nouveau'
     }
-  } else {
-    errorMessage.value = 'Veuillez remplir tous les champs'
   }
-  isConnecting.value = false
+
+  isSubmitting.value = false
 }
 </script>
 
@@ -62,13 +75,11 @@ const handleSubmit = async () => {
               v-model="email"
               @input="() => (errorMessage = '')"
             />
-            <!-- 👆 Bonus 2 - Fonction déclenchée à chaque modification du champ de saisie pour vider le message d'erreur -->
           </div>
 
           <div>
             <label for="password">Mot de passe <span>*</span></label>
             <div class="passwordInput">
-              <!-- 👇 Bonus 1 - Changement du type de l'input selon la valeur de le 'ref' pour rendre visible ou non les caractères entrés dans le champ -->
               <input
                 :type="displayPassword ? 'text' : 'password'"
                 name="password"
@@ -76,9 +87,6 @@ const handleSubmit = async () => {
                 v-model="password"
                 @input="() => (errorMessage = '')"
               />
-              <!-- 👆 Bonus 2 - Fonction déclenchée à chaque modification du champ de saisie pour vider le message d'erreur -->
-
-              <!-- Bonus 1 - affichage conditionnel de l'icône -->
               <div>
                 <font-awesome-icon
                   :icon="['far', 'eye']"
@@ -112,7 +120,7 @@ const handleSubmit = async () => {
 <style scoped>
 .container {
   height: calc(100vh - var(--header-height) - var(--footer-height));
-  background-image: url('../assets/img/illustration.png');
+  background-image: url('../assets/img/login-illustration.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: bottom;
@@ -139,6 +147,7 @@ h2 {
 }
 form {
   flex: 1;
+
   margin: 40px 0;
   display: flex;
   flex-direction: column;

@@ -3,6 +3,7 @@ import './assets/main.css'
 import { createApp, ref } from 'vue'
 import App from './App.vue'
 import router from './router'
+import VueCookies from 'vue-cookies'
 
 // Import de FontAwesome Core
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -25,16 +26,15 @@ import {
   faMapMarkerAlt,
   faCircle,
   faSearch,
-  faAngleLeft,
-  faAngleRight,
   faArrowRight,
   faSignOutAlt,
+  faAngleRight,
+  faAngleLeft,
+  faUserSlash,
 } from '@fortawesome/free-solid-svg-icons'
 
 // Ajout de l'icône à la bibliothèque
 library.add(
-  faSignOutAlt,
-  faArrowRight,
   faPlusSquare,
   faHeart,
   faCheckDouble,
@@ -43,22 +43,34 @@ library.add(
   faUser,
   faCircle,
   faSearch,
-  faAngleLeft,
-  faAngleRight,
+  faArrowRight,
   faEyeSlash,
+  faSignOutAlt,
   faEye,
+  faAngleRight,
+  faAngleLeft,
+  faUserSlash,
 )
-
-const userToken = ref('')
-
-const changeToken = (token) => {
-  userToken.value = token
-}
 
 const app = createApp(App).component('font-awesome-icon', FontAwesomeIcon)
 
 app.use(router)
 
-app.provide('GlobalStore', { userToken: userToken, changeToken: changeToken })
+// Dit à toute l'application d'utiliser le package
+app.use(VueCookies, { expires: '7d', secure: 'true', sameSite: 'Lax' })
+
+// Création de la valeur réactive
+const userInfos = ref(
+  $cookies.get('userInfos') || {
+    username: '',
+    token: '',
+  },
+)
+const changeUserInfos = (infos) => {
+  userInfos.value = infos
+}
+
+// Création du 'provider'
+app.provide('GlobalStore', { userInfos: userInfos, changeUserInfos: changeUserInfos })
 
 app.mount('#app')

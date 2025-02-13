@@ -1,11 +1,44 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-
-import { inject } from 'vue'
+import { inject, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import BtnPublishOffer from './BtnPublishOffer.vue'
 
 const GlobalStore = inject('GlobalStore')
+
+const route = useRoute()
+const router = useRouter()
+
+const searchText = ref('')
+
+const disconnection = () => {
+  // Suppression du cookie
+  $cookies.remove('userInfos')
+
+  GlobalStore.changeUserInfos({
+    username: '',
+    token: '',
+  })
+}
+
+const handleSearch = () => {
+  // Copie des query existantes pour pouvoir les modifier
+  const queries = { ...route.query }
+
+  // SI la valeur existe, elle est ajoutée aux query, SINON la clé est retirée des query
+  if (searchText.value) {
+    queries.title = searchText.value
+  } else {
+    delete queries.title
+  }
+
+  // Pour toujours commencer à la première page de la recherche
+  queries.page = 1
+
+  // On navigue vers la route actuelle avec les query mises à jour
+  router.push({ name: 'home', query: queries })
+}
 </script>
 
 <template>
@@ -19,18 +52,44 @@ const GlobalStore = inject('GlobalStore')
         <div class="middlePart">
           <BtnPublishOffer />
 
-          <div>
-            <input type="text" name="search" id="search" placeholder="Rechercher sur leboncoin" />
-            <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
-          </div>
+          <!-- Transformation de la 'div' en formulaire -->
+          <form @submit.prevent="handleSearch">
+            <input
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Rechercher sur leboncoin"
+              v-model="searchText"
+            />
+
+            <!-- Ajout d'un bouton pour la soumission du formulaire -->
+            <button>
+              <font-awesome-icon :icon="['far', 'eye']" />
+            </button>
+          </form>
         </div>
 
-        <div v-if="!GlobalStore.userToken.value">
-          <font-awesome-icon :icon="['far', 'user']" />
-          <RouterLink :to="{ name: 'login' }">Se connecter</RouterLink>
-        </div>
-        <div v-else @click="GlobalStore.changeToken('')">
-          <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
+        <div class="rightPart">
+          <div v-if="GlobalStore.userInfos.value.username">
+            <div class="connection">
+              <font-awesome-icon :icon="['far', 'user']" />
+              <p>{{ GlobalStore.userInfos.value.username }}</p>
+            </div>
+
+            <div>
+              <font-awesome-icon
+                :icon="['fas', 'user-slash']"
+                @click="disconnection"
+                class="disconnection"
+              />
+            </div>
+          </div>
+
+          <RouterLink :to="{ name: 'login' }" class="connection" v-else>
+            <font-awesome-icon :icon="['far', 'user']" />
+
+            <p>Se connecter</p>
+          </RouterLink>
         </div>
       </div>
 
@@ -80,8 +139,7 @@ const GlobalStore = inject('GlobalStore')
 <style scoped>
 header {
   border-bottom: 1px solid var(--grey);
-  /* -- Bonus 1 - Pour que le 'header' reste en haut de la page */
-  position: sticky;
+  position: fixed;
   top: 0;
   width: 100%;
   background-color: #fff;
@@ -102,12 +160,6 @@ img {
   display: flex;
   justify-content: space-between;
 }
-.topBloc > div:last-child {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
 .topBloc p {
   font-size: 12px;
 }
@@ -116,17 +168,19 @@ img {
   align-items: center;
   gap: 20px;
 }
-.middlePart > div {
+form {
   display: flex;
   background-color: var(--grey-light);
   padding: 7px;
   border-radius: 10px;
   width: 300px;
 }
+
 .middlePart input {
   background-color: inherit;
   border: none;
   flex: 1;
+  outline: none;
 }
 .middlePart svg {
   background-color: var(--orange);
@@ -135,8 +189,35 @@ img {
   border-radius: 7px;
 }
 .middlePart input::placeholder {
-  color: var(--black);
+  color: var(--grey);
   font-size: 16px;
+}
+form button {
+  display: flex;
+  align-items: center;
+  border: none;
+  background-color: #ffffff00;
+  padding: 0;
+}
+.rightPart > div {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  height: 100%;
+  font-size: 16px;
+}
+.disconnection {
+  cursor: pointer;
+  color: var(--grey);
+}
+.connection {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  border: none;
+  background-color: #ffffff00;
 }
 /* -- BOTTOM BLOC ---------------- */
 .bottomBloc {
